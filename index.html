@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>PROMPT LIBRARY — Smart Search & Translate</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app-shell">
+<div id="appMainArea" class="app-main-area">
+<div class="app-content"> 
+<div class="dashboard-container">
+
+  <!-- ── TOP BAR ── -->
+  <div class="top-bar">
+    <div class="title-section">
+      <h1>Prompt Library</h1>
+      
+    </div>
+    <div class="action-strip">
+      <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle light/dark mode">
+        <i class="fas fa-sun" aria-hidden="true"></i> Light
+      </button>
+    </div>
+  </div>
+<!-- ADD THIS BELOW TOP BAR -->
+
+
+<!-- ADD BEFORE PROMPT LIST -->
+
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- SKELETON LOADER -->
+<div id="skeletonLoader" class="skeleton-grid"></div>
+  <!-- ── FILTERS CARD ── -->
+   
+  <div class="filters-card">
+    
+    <div class="filter-grid">
+      <div class="filter-item search-wrapper">
+        <label><i class="fas fa-terminal"></i>  ENGLISH KEYWORD</label>
+        
+        <i class="fas fa-pen-fancy"></i>
+        <input type="text" id="searchInput" placeholder="hummingbird, holographic, exploded, sonar..." autocomplete="off">
+      </div>
+      <div class="translator-panel-actions">
+    <button class="mic-btn" id="MicBtn">
+        <i class=" fas fa-microphone"></i>
+        <span class="mic-tooltip"></span>
+    </button>
+</div>
+          </div>
+      <div class="filter-item">
+        <label><i class="fas fa-tag"></i> Brand</label>
+        <select id="productFilter">
+          <option value="all">All Brands</option>
+          <option value="kipsta"> KIPSTA</option>
+          <option value="perfly">PERFLY</option>
+          <option value="other"> Other</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label><i class="fas fa-industry"></i> Sport / Category</label>
+        <select id="industryFilter">
+          <option value="all">All Categories</option>
+          <option value="Football">Football</option>
+          <option value="Badminton">Badminton</option>
+          <option value="Footwear">Footwear</option>
+          <option value="Beauty">Beauty</option>
+          <option value="Beverage">Beverage</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label><i class="fas fa-film"></i> Visual Style</label>
+        <select id="styleFilter">
+          <option value="all">All Styles</option>
+          <option value="Cinematic">Cinematic</option>
+          <option value="Technical">Technical</option>
+          <option value="Holographic">Holographic FX</option>
+          <option value="Macro">Macro</option>
+          <option value="UGC">UGC</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label><i class="fas fa-video"></i> Format</label>
+        <select id="formatFilter">
+          <option value="all">All Formats</option>
+          <option value="Image">Image</option>
+          <option value="Video">Video</option>
+          <option value="Animation">Animation</option>
+        </select>
+      </div>
+      <div class="action-buttons">
+        <button id="clearAllBtn" class="clear-btn"><i class="fas fa-eraser"></i> CLEAR</button>
+        <button id="openAddPromptBtn" class="add-prompt-btn"><i class="fas fa-plus-circle"></i> ADD PROMPT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TRANSLATOR PILLS — collapsed by default
+  ══════════════════════════════════════════════ -->
+  <div class="translator-bar">
+    <span class="translator-bar-label"><i class="fas fa-language"></i> Translators:</span>
+
+    <!-- Tamil toggle pill -->
+    <button class="lang-pill-btn" id="toggleTam" onclick="toggleTranslator('tam')">
+      <span class="lang-flag"></span> தமிழ் → EN
+      <i class="fas fa-chevron-down lang-chevron" id="chevTam"></i>
+    </button>
+
+    <!-- Kannada toggle pill -->
+    <button class="lang-pill-btn" id="toggleKan" onclick="toggleTranslator('kan')">
+      <span class="lang-flag"></span> ಕನ್ನಡ → EN
+      <i class="fas fa-chevron-down lang-chevron" id="chevKan"></i>
+    </button>
+
+    <!-- Hindi toggle pill -->
+    <button class="lang-pill-btn" id="toggleHin" onclick="toggleTranslator('hin')">
+      <span class="lang-flag"></span> हिंदी → EN
+      <i class="fas fa-chevron-down lang-chevron" id="chevHin"></i>
+    </button>
+  </div>
+
+  <!-- ── TAMIL TRANSLATOR CARD (hidden by default) ── -->
+  <div class="translator-card" id="cardTam">
+    <div class="translator-card-header">
+      <div class="translator-card-title">
+        <span class="lang-badge tam">த</span>
+        <div>
+          <strong>Tamil → English Translator &amp; Search</strong>
+          <div class="translator-card-sub">Type or Speak Tamil → auto-translate → instant library search</div>
+        </div>
+      </div>
+      <button class="translator-close-btn" onclick="toggleTranslator('tam')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="translator-card-body">
+      <div class="translator-panels">
+        <div class="translator-panel">
+          <label>தமிழ் உள்ளீடு</label>
+          <textarea id="tamInput" rows="4" placeholder="இங்கே தமிழில் தட்டச்சு செய்யுங்கள்...&#10;eg: கால்பந்து, ஹாலோகிராஃபிக், பறவை"></textarea>
+          <div class="translator-panel-actions">
+            <button class="mic-inline-btn" id="tamMicBtn" onclick="startInlineMic('tamInput','ta-IN')">
+              <i class="fas fa-microphone"></i> Speak Tamil
+            </button>
+          </div>
+        </div>
+        <div class="translator-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="translator-panel">
+          <label>English Output</label>
+          <textarea id="tamOutput" rows="4" placeholder="Translation will appear here..." readonly></textarea>
+          <div class="translator-panel-actions">
+            <button class="use-search-btn" onclick="useTranslationForSearch('tamOutput')">
+              <i class="fas fa-search"></i> Use to Search
+            </button>
+            <button class="copy-translation-btn" onclick="copyTranslation('tamOutput')">
+              <i class="far fa-copy"></i> Copy
+            </button>
+          </div>
+        </div>
+      </div>
+      <button class="translate-action-btn" onclick="doTranslate('tamInput','tamOutput','ta|en')">
+        <i class="fas fa-language"></i> Translate Tamil → English
+      </button>
+      <div class="translator-status" id="tamStatus"></div>
+    </div>
+  </div>
+
+  <!-- ── KANNADA TRANSLATOR CARD (hidden by default) ── -->
+  <div class="translator-card" id="cardKan">
+    <div class="translator-card-header">
+      <div class="translator-card-title">
+        <span class="lang-badge kan">ಕ</span>
+        <div>
+          <strong>Kannada → English Translator</strong>
+          <div class="translator-card-sub">Type Kannada text → get English → use it to search the library</div>
+        </div>
+      </div>
+      <button class="translator-close-btn" onclick="toggleTranslator('kan')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="translator-card-body">
+      <div class="translator-panels">
+        <div class="translator-panel">
+          <label>ಕನ್ನಡ ಇನ್‌ಪುಟ್</label>
+          <textarea id="kanInput" rows="4" placeholder="ಇಲ್ಲಿ ಕನ್ನಡದಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ...&#10;eg: ಚೆಂಡು, ಚಿತ್ರ, ಬ್ಯಾಡ್ಮಿಂಟನ್"></textarea>
+          <div class="translator-panel-actions">
+            <button class="mic-inline-btn" onclick="startInlineMic('kanInput','ka-IN')">
+              <i class="fas fa-microphone"></i> Speak Kannada
+            </button>
+          </div>
+        </div>
+        <div class="translator-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="translator-panel">
+          <label>English Output</label>
+          <textarea id="kanOutput" rows="4" placeholder="Translation will appear here..." readonly></textarea>
+          <div class="translator-panel-actions">
+            <button class="use-search-btn" onclick="useTranslationForSearch('kanOutput')">
+              <i class="fas fa-search"></i> Use to Search
+            </button>
+            <button class="copy-translation-btn" onclick="copyTranslation('kanOutput')">
+              <i class="far fa-copy"></i> Copy
+            </button>
+          </div>
+        </div>
+      </div>
+      <button class="translate-action-btn" onclick="doTranslate('kanInput','kanOutput','kn|en')">
+        <i class="fas fa-language"></i> Translate Kannada → English
+      </button>
+      <div class="translator-status" id="kanStatus"></div>
+    </div>
+  </div>
+
+  <!-- ── HINDI TRANSLATOR CARD (hidden by default) ── -->
+  <div class="translator-card" id="cardHin">
+    <div class="translator-card-header">
+      <div class="translator-card-title">
+        <span class="lang-badge hin">ह</span>
+        <div>
+          <strong>Hindi → English Translator</strong>
+          <div class="translator-card-sub">Type Hindi text → get English → use it to search the library</div>
+        </div>
+      </div>
+      <button class="translator-close-btn" onclick="toggleTranslator('hin')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="translator-card-body">
+      <div class="translator-panels">
+        <div class="translator-panel">
+          <label>हिंदी इनपुट</label>
+          <textarea id="hinInput" rows="4" placeholder="यहाँ हिंदी में टाइप करें...&#10;eg: फुटबॉल, होलोग्राफिक, बैडमिंटन"></textarea>
+          <div class="translator-panel-actions">
+            <button class="mic-inline-btn" onclick="startInlineMic('hinInput','hi-IN')">
+              <i class="fas fa-microphone"></i> Speak Hindi
+            </button>
+          </div>
+        </div>
+        <div class="translator-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="translator-panel">
+          <label>English Output</label>
+          <textarea id="hinOutput" rows="4" placeholder="Translation will appear here..." readonly></textarea>
+          <div class="translator-panel-actions">
+            <button class="use-search-btn" onclick="useTranslationForSearch('hinOutput')">
+              <i class="fas fa-search"></i> Use to Search
+            </button>
+            <button class="copy-translation-btn" onclick="copyTranslation('hinOutput')">
+              <i class="far fa-copy"></i> Copy
+            </button>
+          </div>
+        </div>
+      </div>
+      <button class="translate-action-btn" onclick="doTranslate('hinInput','hinOutput','hi|en')">
+        <i class="fas fa-language"></i> Translate Hindi → English
+      </button>
+      <div class="translator-status" id="hinStatus"></div>
+    </div>
+  </div>
+
+  <!-- ── RESULTS ── -->
+  <div class="results-header">
+    <h3><i class="fas fa-scroll"></i> PROMPT VAULT <span id="resultCountSpan">(0)</span></h3>
+  </div>
+  <div id="promptResultsContainer" class="prompt-grid"></div>
+
+  <div class="info-note">
+    <i class="fas fa-brain"></i> ADD ANY PROMPT: Tamil, Kannada, Hindi or English. Speak or type to search instantly.
+  </div>
+</div>
+
+<!-- ── ADD PROMPT MODAL ── -->
+<div id="addPromptModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2><i class="fas fa-robot"></i> Smart Prompt Importer</h2>
+      <button class="close-modal" id="closeModalBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label><i class="fas fa-paste"></i> RAW PROMPT TEXT (Tamil or English)</label>
+        <textarea id="rawPromptText" rows="6" placeholder="Paste any prompt in English or Tamil...&#10;Example Tamil: கால்பந்து கிப்பஸ்டா 160 நியான் ஹாலோகிராஃபிக்"></textarea>
+        <div class="helper-text">System will auto-detect brand, style &amp; format and add to library.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>🏷️ BRAND (optional override)</label>
+          <select id="overrideProduct">
+            <option value="auto">🤖 Auto-detect</option>
+            <option value="kipsta">⚽ KIPSTA</option>
+            <option value="perfly">🏸 PERFLY</option>
+            <option value="other">🏷️ Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>🎨 STYLE (optional override)</label>
+          <select id="overrideStyle">
+            <option value="auto">🤖 Auto-detect</option>
+            <option value="Cinematic">Cinematic</option>
+            <option value="Technical">Technical</option>
+            <option value="Holographic">Holographic</option>
+            <option value="Macro">Macro</option>
+            <option value="UGC">UGC</option>
+          </select>
+        </div>
+      </div>
+      <button id="confirmAddPromptBtn" class="submit-prompt-btn"><i class="fas fa-check-double"></i> CONVERT &amp; ADD</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /.dashboard-container -->
+</div><!-- /.app-content -->
+
+<!-- ── SIDE PANEL ── -->
+<aside id="sidePanel" class="side-panel" role="complementary" aria-label="Prompt preview panel">
+  <div class="side-panel-header">
+    <h3><i class="fas fa-columns" aria-hidden="true"></i> Prompt Preview</h3>
+    <button class="close-panel-btn" id="closePanelBtn" aria-label="Close preview panel"><i class="fas fa-times" aria-hidden="true"></i></button>
+  </div>
+  <div class="side-panel-meta" id="sidePanelMeta"></div>
+  <div class="side-panel-title" id="sidePanelTitle"></div>
+  <div class="side-panel-body" id="sidePanelBody"></div>
+  <div class="side-panel-struct" id="sidePanelStruct" style="display:none">
+    <h4><i class="fas fa-layer-group" aria-hidden="true"></i> Structured Breakdown</h4>
+    <div class="struct-rows"></div>
+  </div>
+  <button class="side-panel-copy-btn" id="sidePanelCopyBtn" aria-label="Copy full prompt">
+    <i class="far fa-copy" aria-hidden="true"></i> Copy Full Prompt
+  </button>
+</aside>
+
+</div><!-- /.app-main-area -->
+</div><!-- /.app-shell -->
+
+<div id="loadingOverlay" class="loading-overlay">
+  <i class="fas fa-spinner fa-pulse"></i> Loading prompts...
+</div>
+
+<!-- Hidden Tamil search elements used by control.js voice/translation logic -->
+<input type="text" id="tamilSearchInput" style="display:none;" autocomplete="off">
+<div id="translationPreview" style="display:none;"><span id="englishPreviewText"></span></div>
+<button id="micBtn" style="display:none;"><i class="fas fa-microphone" id="micIcon"></i><span id="micLabel">SPEAK</span></button>
+<div id="micStatus" style="display:none;"><span id="micStatusText"></span><button id="micStopBtn"></button></div>
+
+<script src="/static/control.js"></script>
+</body>
+</html>
